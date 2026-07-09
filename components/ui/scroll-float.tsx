@@ -35,11 +35,25 @@ export const ScrollFloat: React.FC<ScrollFloatProps> = ({
   // Divide il testo in singoli caratteri se è una stringa
   const characters = useMemo(() => {
     if (typeof children === 'string') {
-      return children.split('').map((char, index) => (
-        <span key={index} className={`inline-block ${textClassName}`} style={{ opacity: 0 }}>
-          {char === ' ' ? '\u00A0' : char}
-        </span>
-      ));
+      return children.split(/(\s+)/).map((token, tokenIndex) => {
+        if (/^\s+$/.test(token)) {
+          return <React.Fragment key={tokenIndex}> </React.Fragment>;
+        }
+
+        return (
+          <span key={tokenIndex} className="inline-block whitespace-nowrap">
+            {token.split('').map((char, charIndex) => (
+              <span
+                key={charIndex}
+                className={`scroll-float-char inline-block ${textClassName}`}
+                style={{ opacity: 0 }}
+              >
+                {char}
+              </span>
+            ))}
+          </span>
+        );
+      });
     }
     return children;
   }, [children, textClassName]);
@@ -49,8 +63,15 @@ export const ScrollFloat: React.FC<ScrollFloatProps> = ({
     if (!el) return;
 
     // Seleziona tutti i caratteri generati
-    const chars = el.querySelectorAll('span.inline-block');
+    const chars = el.querySelectorAll('.scroll-float-char');
     if (chars.length === 0) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isSmallScreen = window.matchMedia('(max-width: 767px)').matches;
+
+    if (reduceMotion || isSmallScreen) {
+      gsap.set(chars, { opacity: 1, y: 0, rotationX: 0 });
+      return;
+    }
 
     const scroller = scrollContainerRef?.current || window;
 

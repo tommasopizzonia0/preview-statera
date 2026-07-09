@@ -1,6 +1,7 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
-import { MotionValue, motion, useScroll, useTransform } from "motion/react";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import {
   IconBrightnessDown, IconBrightnessUp, IconCaretRightFilled, IconCaretUpFilled,
@@ -33,22 +34,17 @@ export const MacbookScroll = ({
     offset: ["start start", "end start"],
   });
 
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth < 768) { setIsMobile(true); }
-  }, []);
-
-  const scaleX = useTransform(scrollYProgress, [0, 0.3], [1.2, isMobile ? 1 : 1.5]);
-  const scaleY = useTransform(scrollYProgress, [0, 0.3], [0.6, isMobile ? 1 : 1.5]);
+  const scaleX = useTransform(scrollYProgress, [0, 0.3], [1.2, 1.5]);
+  const scaleY = useTransform(scrollYProgress, [0, 0.3], [0.6, 1.5]);
   const translate = useTransform(scrollYProgress, [0, 1], [0, 1200]);
   const rotate = useTransform(scrollYProgress, [0.1, 0.12, 0.3], [-28, -28, 0]);
   const textTransform = useTransform(scrollYProgress, [0, 0.3], [0, 100]);
   const textOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   return (
-    <div ref={ref} className="min-h-[200vh] w-full flex flex-col items-center">
+    <div ref={ref} className="min-h-[115svh] md:min-h-[200vh] w-full flex flex-col items-center">
       
-      <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-center [perspective:800px] scale-[0.4] sm:scale-50 md:scale-100 transform origin-center">
+      <div className="sticky top-0 flex h-[85svh] md:h-screen w-full flex-col items-center justify-center [perspective:800px] scale-[0.38] sm:scale-50 md:scale-100 transform origin-center">
         
         {/* Titolo scuro per leggere bene sul bianco della pagina */}
         <motion.h2
@@ -105,7 +101,15 @@ export const Lid = ({ scaleX, scaleY, rotate, translate, src }: any) => {
       </div>
       <motion.div style={{ scaleX: scaleX, scaleY: scaleY, rotateX: rotate, translateY: translate, transformStyle: "preserve-3d", transformOrigin: "top" } as any} className="absolute inset-0 h-96 w-[32rem] rounded-2xl bg-[#010101] p-2 z-30">
         <div className="absolute inset-0 rounded-lg bg-[#272729]" />
-        <img src={src} alt="mac display" className="absolute inset-0 h-full w-full rounded-lg object-cover object-left-top" />
+        {src && (
+          <Image
+            src={src}
+            alt="Anteprima della dashboard Statera"
+            fill
+            sizes="(max-width: 767px) 90vw, 512px"
+            className="rounded-lg object-cover object-left-top"
+          />
+        )}
       </motion.div>
     </div>
   );

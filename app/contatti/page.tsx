@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import { AuroraText } from "@/components/ui/aurora-text";
 // Importazione del bottone stateful che gestisce i caricamenti
 import { Button } from "@/components/ui/stateful-button";
@@ -9,15 +9,27 @@ import { Footer } from "@/components/ui/footer";
 export default function ContattiPage() {
   const textDark = "text-slate-900";
   const primaryGreen = "text-[#059669]";
+  const formRef = useRef<HTMLFormElement>(null);
 
-  // Funzione per gestire l'invio del form (API mock)
   const handleSendRequest = async () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log("Richiesta inviata all'élite Statera");
-        resolve(true);
-      }, 4000); // 4 secondi come richiesto dalla demo dello stateful button
+    const form = formRef.current;
+    if (!form || !form.reportValidity()) {
+      throw new Error("Compila tutti i campi obbligatori.");
+    }
+
+    const data = new FormData(form);
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(Object.fromEntries(data.entries())),
     });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.error ?? "Invio non riuscito.");
+    }
+
+    form.reset();
   };
 
   return (
@@ -41,7 +53,11 @@ export default function ContattiPage() {
 
       {/* FORM CONTAINER (Glassmorphism Chiaro) */}
       <div className="w-full max-w-2xl relative p-8 md:p-12 rounded-3xl bg-white/80 border border-slate-200 backdrop-blur-xl z-10 shadow-2xl shadow-emerald-500/10">
-        <form className="space-y-6 flex flex-col">
+        <form ref={formRef} className="space-y-6 flex flex-col" onSubmit={(event) => event.preventDefault()}>
+          <div className="hidden" aria-hidden="true">
+            <label htmlFor="website">Sito web</label>
+            <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Nome */}
@@ -51,7 +67,10 @@ export default function ContattiPage() {
               </label>
               <input
                 id="name"
+                name="name"
                 type="text"
+                required
+                autoComplete="name"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#059669]/20 focus:border-[#059669] transition-all"
                 placeholder="Dr. Mario Rossi"
               />
@@ -64,7 +83,10 @@ export default function ContattiPage() {
               </label>
               <input
                 id="email"
+                name="email"
                 type="email"
+                required
+                autoComplete="email"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#059669]/20 focus:border-[#059669] transition-all"
                 placeholder="mario.rossi@studio.it"
               />
@@ -79,6 +101,8 @@ export default function ContattiPage() {
             <div className="relative">
               <select
                 id="subject"
+                name="subject"
+                defaultValue="demo"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#059669]/20 focus:border-[#059669] transition-all appearance-none cursor-pointer"
               >
                 <option value="info">Richiesta Informazioni</option>
@@ -101,6 +125,7 @@ export default function ContattiPage() {
             </label>
             <textarea
               id="message"
+              name="message"
               rows={5}
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#059669]/20 focus:border-[#059669] transition-all resize-none"
               placeholder="Come possiamo aiutarti a raggiungere l'eccellenza?"
@@ -110,11 +135,15 @@ export default function ContattiPage() {
           {/* STATEFUL BUTTON ADATTATO */}
           <div className="mt-4 w-full">
             <Button
+              type="button"
               onClick={handleSendRequest}
               className="w-full bg-[#059669] hover:bg-[#047857] text-white font-black text-lg py-7 rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(5,150,105,0.2)] hover:shadow-[0_0_30px_rgba(5,150,105,0.4)]"
             >
               Invia Richiesta
             </Button>
+            <p className="mt-3 text-center text-xs text-slate-500">
+              La richiesta verrà inviata direttamente al team Statera.
+            </p>
           </div>
         </form>
         {/* FOOTER */}

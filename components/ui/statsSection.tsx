@@ -6,7 +6,7 @@ export const StatsSection = () => {
   // Ho rimosso i placeholder precedenti con valori più professionali
   const stats = [
     { label: "Precisione", value: "99.9%", desc: "Calibrazione millimetrica per ogni singolo piano alimentare." },
-    { label: "Pazienti", value: "10k+", desc: "La community dei migliori professionisti della nutrizione." },
+    { label: "Gestione", value: "360°", desc: "Fascicoli, misurazioni, piani alimentari e report in un unico spazio." },
     { label: "Efficienza", value: "x2", desc: "Meno tempo alla scrivania, più tempo dedicato ai tuoi pazienti." }
   ];
 
@@ -15,9 +15,9 @@ export const StatsSection = () => {
 
   return (
     /* bg-white per coerenza con il resto della pagina */
-    <section className="py-40 px-8 max-w-7xl mx-auto bg-white">
+    <section className="py-20 px-5 sm:px-8 md:py-40 max-w-7xl mx-auto bg-transparent">
       {/* INTESTAZIONE SEZIONE */}
-      <div className="mb-32">
+      <div className="mb-20 md:mb-32">
         <ScrollFloat
           animationDuration={0.8}
           stagger={0.03}
@@ -37,13 +37,13 @@ export const StatsSection = () => {
           scrollStart="top bottom-=10%"
           scrollEnd="bottom center"
           // Testo scuro per lo sfondo bianco
-          textClassName={`${textDark} text-5xl md:text-7xl font-light leading-tight`}
+          textClassName={`${textDark} text-4xl sm:text-5xl md:text-7xl font-light leading-tight`}
         >
           Prestazioni senza compromessi.
         </ScrollFloat>
       </div>
 
-      <div className="space-y-40">
+      <div className="space-y-20 md:space-y-40">
         {stats.map((stat, index) => (
           <div 
             key={index} 
@@ -72,7 +72,7 @@ export const StatsSection = () => {
                 stagger={0.1}
                 containerClassName="mb-4"
                 // Valore in nero profondo per un impatto "luxury"
-                textClassName={`text-7xl md:text-[11rem] font-black leading-none ${textDark} tracking-tighter`}
+                textClassName={`text-6xl sm:text-7xl md:text-[11rem] font-black leading-none ${textDark} tracking-tighter`}
               >
                 {stat.value}
               </ScrollFloat>

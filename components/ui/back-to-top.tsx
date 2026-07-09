@@ -5,14 +5,16 @@ export const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
     const toggleVisibility = () => {
-      if (window.scrollY > 400) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        setIsVisible(window.scrollY > 400);
+        ticking = false;
+      });
     };
-    window.addEventListener("scroll", toggleVisibility);
+    window.addEventListener("scroll", toggleVisibility, { passive: true });
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
@@ -25,7 +27,8 @@ export const BackToTop = () => {
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed bottom-10 right-10 z-[100] flex items-center w-[140px] h-[56px] overflow-hidden bg-transparent cursor-pointer group transition-all duration-500 ${
+      aria-label="Torna all'inizio della pagina"
+      className={`fixed bottom-4 right-4 sm:bottom-10 sm:right-10 z-[100] flex items-center w-12 sm:w-[140px] h-12 sm:h-[56px] overflow-hidden bg-white/90 sm:bg-transparent rounded-full sm:rounded-none shadow-lg sm:shadow-none cursor-pointer group transition-all duration-300 ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"
       }`}
     >
@@ -33,7 +36,7 @@ export const BackToTop = () => {
       <div className="absolute bottom-2 left-0 w-full h-[2px] bg-[#10b981] origin-right scale-x-0 transition-transform duration-300 group-hover:scale-x-100 group-hover:origin-left" />
 
       {/* Testo Originale (quello che sale) */}
-      <div className="absolute inset-0 flex items-center">
+      <div className="absolute inset-0 hidden sm:flex items-center">
         {words.map((word, i) => (
           <span
             key={`text-${i}`}
@@ -45,7 +48,7 @@ export const BackToTop = () => {
       </div>
 
       {/* Testo Clone (quello che entra dal basso) */}
-      <div className="absolute inset-0 flex items-center">
+      <div className="absolute inset-0 hidden sm:flex items-center">
         {words.map((word, i) => (
           <span
             key={`clone-${i}`}
@@ -59,7 +62,7 @@ export const BackToTop = () => {
 
       {/* Icona Freccia */}
       <svg
-        className="absolute right-0 w-6 h-6 text-[#10b981] -rotate-90 transition-all duration-300 group-hover:-translate-y-2"
+        className="absolute right-3 sm:right-0 w-6 h-6 text-[#10b981] -rotate-90 transition-all duration-300 group-hover:-translate-y-1"
         strokeWidth="2"
         stroke="currentColor"
         viewBox="0 0 24 24"

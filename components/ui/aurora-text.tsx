@@ -1,6 +1,4 @@
-"use client"
-
-import React, { memo } from "react"
+import React from "react"
 
 interface AuroraTextProps {
   children: React.ReactNode
@@ -9,8 +7,7 @@ interface AuroraTextProps {
   speed?: number
 }
 
-export const AuroraText = memo(
-  ({
+export const AuroraText = ({
     children,
     className = "",
     colors = ["#41d657", "#125e2d", "#2cae48", "#32c884"],
@@ -38,6 +35,3 @@ export const AuroraText = memo(
       </span>
     )
   }
-)
-
-AuroraText.displayName = "AuroraText"

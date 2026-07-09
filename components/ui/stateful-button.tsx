@@ -2,17 +2,17 @@
 
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Loader2, Check } from "lucide-react"; // Assicurati di avere lucide-react installato
+import { Loader2, Check, AlertCircle } from "lucide-react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  onClick: () => Promise<any>;
+  onClick: () => Promise<unknown>;
   children: React.ReactNode;
 }
 
 export const Button = ({ onClick, children, className, ...props }: ButtonProps) => {
-  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
-  const handleInternalClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleInternalClick = async () => {
     if (status !== "idle") return;
 
     setStatus("loading");
@@ -22,8 +22,9 @@ export const Button = ({ onClick, children, className, ...props }: ButtonProps) 
       // Torna allo stato normale dopo 2 secondi dal successo
       setTimeout(() => setStatus("idle"), 2000);
     } catch (error) {
-      setStatus("idle");
+      setStatus("error");
       console.error("Errore durante l'invio:", error);
+      setTimeout(() => setStatus("idle"), 3000);
     }
   };
 
@@ -31,7 +32,7 @@ export const Button = ({ onClick, children, className, ...props }: ButtonProps) 
     <button
       {...props}
       onClick={handleInternalClick}
-      disabled={status !== "idle"}
+      disabled={status === "loading" || status === "success"}
       className={cn(
         "relative flex items-center justify-center transition-all duration-300 disabled:cursor-not-allowed",
         status === "success" ? "bg-emerald-600" : "",
@@ -55,8 +56,16 @@ export const Button = ({ onClick, children, className, ...props }: ButtonProps) 
 
       {/* Stato SUCCESS - Icona Check */}
       {status === "success" && (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center gap-2" aria-live="polite">
           <Check className="h-6 w-6 text-white animate-in zoom-in duration-300" />
+          <span>Richiesta inviata</span>
+        </div>
+      )}
+
+      {status === "error" && (
+        <div className="absolute inset-0 flex items-center justify-center gap-2" aria-live="assertive">
+          <AlertCircle className="h-6 w-6 text-white" />
+          <span>Invio non riuscito. Riprova</span>
         </div>
       )}
     </button>

@@ -11,7 +11,6 @@ export const StatsSection = () => {
   ];
 
   const textDark = "text-slate-900";
-  const primaryGreen = "text-[#059669]";
 
   return (
     /* bg-white per coerenza con il resto della pagina */
@@ -27,7 +26,7 @@ export const StatsSection = () => {
           textClassName="text-[#059669] text-sm font-bold uppercase tracking-[0.3em]"
           containerClassName="mb-4"
         >
-          I numeri dell'eccellenza
+          I numeri dell&apos;eccellenza
         </ScrollFloat>
 
         <ScrollFloat

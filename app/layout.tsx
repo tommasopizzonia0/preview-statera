@@ -1,49 +1,40 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-// Importazione dei componenti UI
 import { Header } from "@/components/ui/header";
-import { GreenShader } from "@/components/ui/green-shader";
 import { BackToTop } from "@/components/ui/back-to-top";
+import { NutritionBackdrop } from "@/components/ui/nutrition-backdrop";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Statera | L'Eccellenza Nutrizionale",
-  description: "Piattaforma Luxury per Nutrizionisti d'Élite",
+  title: "Statera | Il gestionale per nutrizionisti",
+  description: "Clienti, misurazioni, piani alimentari, agenda e report in un unico ambiente professionale.",
+  icons: {
+    icon: "/statera-favicon.png?v=1",
+    shortcut: "/statera-favicon.png?v=1",
+    apple: "/statera-favicon.png?v=1",
+  },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="it">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased text-white min-h-screen relative bg-transparent`}
-      >
-        {/* La GreenShader ha -z-50 e fixed. Rimarrà dietro tutto */}
-        <GreenShader />
-
-        {/* L'Header ha z-50. Rimarrà sopra tutto */}
+      <body className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-white antialiased`}>
+        <NutritionBackdrop />
         <Header />
-        
-        {/* Contenitore principale con z-index per stare sopra la shader */}
-        <main className="relative z-10">
-          {children}
-        </main>
-
+        {children}
         <BackToTop />
       </body>
     </html>

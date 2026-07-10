@@ -1,6 +1,6 @@
 "use client";
-import React, { useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
+import React, { type ReactNode, useRef } from "react";
+import { motion, type MotionValue, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import {
@@ -42,13 +42,13 @@ export const MacbookScroll = ({
   const textOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   return (
-    <div ref={ref} className="min-h-[115svh] md:min-h-[200vh] w-full flex flex-col items-center">
+    <div ref={ref} className="min-h-[64svh] w-full flex flex-col items-center md:min-h-[200vh]">
       
-      <div className="sticky top-0 flex h-[85svh] md:h-screen w-full flex-col items-center justify-center [perspective:800px] scale-[0.38] sm:scale-50 md:scale-100 transform origin-center">
+      <div className="sticky top-0 flex h-[60svh] w-full -translate-y-8 scale-[0.38] transform flex-col items-center justify-center [perspective:800px] origin-center sm:scale-50 md:h-screen md:translate-y-0 md:scale-100">
         
         {/* Titolo scuro per leggere bene sul bianco della pagina */}
         <motion.h2
-          style={{ translateY: textTransform, opacity: textOpacity } as any}
+          style={{ translateY: textTransform, opacity: textOpacity }}
           className="mb-14 text-center text-3xl font-bold text-slate-900 relative z-50"
         >
           {title}
@@ -91,7 +91,15 @@ export const MacbookScroll = ({
 
 /* ... (Il resto dei componenti Lid, Keypad, etc. rimangono uguali alla tua versione originale) ... */
 
-export const Lid = ({ scaleX, scaleY, rotate, translate, src }: any) => {
+type LidProps = {
+  scaleX: MotionValue<number>;
+  scaleY: MotionValue<number>;
+  rotate: MotionValue<number>;
+  translate: MotionValue<number>;
+  src?: string;
+};
+
+export const Lid = ({ scaleX, scaleY, rotate, translate, src }: LidProps) => {
   return (
     <div className="relative [perspective:800px] z-20">
       <div style={{ transform: "perspective(800px) rotateX(-25deg) translateZ(0px)", transformOrigin: "bottom", transformStyle: "preserve-3d" }} className="relative h-[12rem] w-[32rem] rounded-2xl bg-[#010101] p-2">
@@ -99,7 +107,7 @@ export const Lid = ({ scaleX, scaleY, rotate, translate, src }: any) => {
           <span className="text-white"><AceternityLogo /></span>
         </div>
       </div>
-      <motion.div style={{ scaleX: scaleX, scaleY: scaleY, rotateX: rotate, translateY: translate, transformStyle: "preserve-3d", transformOrigin: "top" } as any} className="absolute inset-0 h-96 w-[32rem] rounded-2xl bg-[#010101] p-2 z-30">
+      <motion.div style={{ scaleX, scaleY, rotateX: rotate, translateY: translate, transformStyle: "preserve-3d", transformOrigin: "top" }} className="absolute inset-0 h-96 w-[32rem] rounded-2xl bg-[#010101] p-2 z-30">
         <div className="absolute inset-0 rounded-lg bg-[#272729]" />
         {src && (
           <Image
@@ -107,7 +115,7 @@ export const Lid = ({ scaleX, scaleY, rotate, translate, src }: any) => {
             alt="Anteprima della dashboard Statera"
             fill
             sizes="(max-width: 767px) 90vw, 512px"
-            className="rounded-lg object-cover object-left-top"
+            className="rounded-lg bg-white object-contain object-center"
           />
         )}
       </motion.div>
@@ -189,7 +197,14 @@ export const Keypad = () => {
   );
 };
 
-export const KBtn = ({ className, children, childrenClassName, backlit = true }: any) => {
+type KBtnProps = {
+  className?: string;
+  children?: ReactNode;
+  childrenClassName?: string;
+  backlit?: boolean;
+};
+
+export const KBtn = ({ className, children, childrenClassName, backlit = true }: KBtnProps) => {
   return (
     <div className={cn("[transform:translateZ(0)] rounded-[4px] p-[0.5px] [will-change:transform]", backlit && "bg-white/[0.2] shadow-xl shadow-white")}>
       <div className={cn("flex h-6 w-6 items-center justify-center rounded-[3.5px] bg-[#0A090D]", className)} style={{ boxShadow: "0px -0.5px 2px 0 #0D0D0F inset, -0.5px 0px 2px 0 #0D0D0F inset" }}>

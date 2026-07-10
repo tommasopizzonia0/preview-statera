@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface GlowingEffectProps {
@@ -19,7 +19,6 @@ const GlowingEffect = memo(
     inactiveZone = 0.1,
     proximity = 64,
     spread = 40,
-    glow = true,
     className,
     borderWidth = 2,
     disabled = false,
@@ -80,7 +79,7 @@ const GlowingEffect = memo(
           "--spread": `${spread}deg`,
           "--glow-color": "#10b981",
           WebkitMaskImage: ` transparent, white var(--spread), transparent calc(var(--spread) * 2))`,
-        } as any}
+        } as CSSProperties & { "--spread": string; "--glow-color": string }}
       >
         <div 
           className="absolute inset-0 rounded-[inherit]"

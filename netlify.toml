@@ -1,0 +1,7 @@
+# Runtime Next.js: serve per le route API (/api/contact) come funzioni serverless.
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

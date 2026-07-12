@@ -1,10 +1,12 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 
 type PricingPlan = {
   id: string;
   name: string;
-  price: string;
-  frequency: string;
+  monthlyPrice: string;
+  annualPrice: string;
   description: string;
   features: string[];
   buttonText: string;
@@ -25,30 +27,25 @@ const CheckIcon = () => (
     aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 20 20"
-    fill="currentColor"
-    className="h-5 w-5 shrink-0"
+    fill="none"
+    className="h-3.5 w-3.5 shrink-0"
   >
-    <path
-      fillRule="evenodd"
-      d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.707-9.293a1 1 0 0 0-1.414-1.414L9 10.586 7.707 9.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z"
-      clipRule="evenodd"
-    />
+    <path d="m4.5 10.5 3.4 3.4 7.6-8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 const PricingTier = ({
-  name,
-  price,
-  frequency,
-  description,
-  features,
-  buttonText,
-  buttonLink,
-  isFeatured = false,
-}: PricingPlan) => {
+  plan,
+  annual,
+}: {
+  plan: PricingPlan;
+  annual: boolean;
+}) => {
+  const { name, monthlyPrice, annualPrice, description, features, buttonText, buttonLink, isFeatured = false } = plan;
+
   const cardClasses = isFeatured
-    ? "relative bg-slate-950 text-white border-emerald-400 shadow-[0_24px_70px_rgba(5,150,105,0.24)] md:-translate-y-4"
-    : "bg-white text-slate-900 border-slate-200 shadow-[0_16px_50px_rgba(15,23,42,0.08)]";
+    ? "border-emerald-400/70 bg-slate-950 text-white shadow-[0_30px_80px_rgba(5,150,105,0.28)] md:-translate-y-5 hover:shadow-[0_36px_90px_rgba(5,150,105,0.36)]"
+    : "border-slate-200/80 bg-gradient-to-b from-white to-emerald-50/50 text-slate-900 shadow-[0_10px_40px_rgba(15,23,42,0.06)] hover:border-emerald-200 hover:shadow-[0_28px_70px_rgba(5,150,105,0.16)]";
 
   const buttonClasses = isFeatured
     ? "bg-emerald-400 text-slate-950 hover:bg-emerald-300"
@@ -56,33 +53,47 @@ const PricingTier = ({
 
   return (
     <article
-      className={`${cardClasses} flex w-full max-w-sm flex-col rounded-3xl border p-7 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_24px_70px_rgba(5,150,105,0.18)] sm:p-8`}
+      className={`${cardClasses} relative flex w-full max-w-sm flex-col overflow-hidden rounded-[1.75rem] border p-7 transition-all duration-300 hover:-translate-y-2 sm:p-8`}
     >
+      {/* Bagliore interno della card in evidenza */}
       {isFeatured && (
-        <span className="absolute right-6 top-6 rounded-full bg-emerald-400 px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.16em] text-slate-950">
-          Più scelto
-        </span>
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.22),transparent_55%)]" />
       )}
 
-      <p className={`text-sm font-bold uppercase tracking-[0.2em] ${isFeatured ? "text-emerald-300" : "text-emerald-600"}`}>
-        {name}
-      </p>
-      <div className="mt-7 flex items-end gap-2">
-        <span className="text-5xl font-black tracking-tight">{price}</span>
-        <span className={`pb-1 text-sm font-medium ${isFeatured ? "text-slate-300" : "text-slate-500"}`}>
-          {frequency}
-        </span>
+      <div className="relative flex items-center justify-between gap-3">
+        <p className={`text-sm font-black uppercase tracking-[0.2em] ${isFeatured ? "text-emerald-300" : "text-emerald-600"}`}>
+          {name}
+        </p>
+        {isFeatured && (
+          <span className="rounded-full bg-emerald-400 px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.16em] text-slate-950 shadow-[0_6px_18px_rgba(16,185,129,0.45)]">
+            Più scelto
+          </span>
+        )}
       </div>
-      <p className={`mt-5 min-h-12 text-sm leading-relaxed ${isFeatured ? "text-slate-300" : "text-slate-600"}`}>
+      <div className="relative mt-7 flex items-end gap-2.5">
+        <span className="text-[3.4rem] font-black leading-none tracking-[-0.04em]">{annual ? annualPrice : monthlyPrice}</span>
+        <span className={`pb-1.5 text-sm font-semibold ${isFeatured ? "text-slate-300" : "text-slate-500"}`}>
+          / mese
+        </span>
+        {annual && (
+          <span className="pb-1.5 text-base font-bold text-slate-400 line-through decoration-emerald-500/70 decoration-2">
+            {monthlyPrice}
+          </span>
+        )}
+      </div>
+      <p className={`mt-2 min-h-5 text-xs font-semibold ${isFeatured ? "text-emerald-300" : "text-emerald-600"}`}>
+        {annual ? "Per 12 mesi, con fatturazione annuale" : " "}
+      </p>
+      <p className={`mt-3 min-h-12 text-sm leading-relaxed ${isFeatured ? "text-slate-300" : "text-slate-600"}`}>
         {description}
       </p>
 
-      <div className={`my-7 h-px ${isFeatured ? "bg-white/15" : "bg-slate-200"}`} />
+      <div className={`my-7 h-px ${isFeatured ? "bg-gradient-to-r from-emerald-400/40 via-white/10 to-transparent" : "bg-gradient-to-r from-emerald-200 via-slate-200 to-transparent"}`} />
 
-      <ul className="flex-1 space-y-4">
+      <ul className="relative flex-1 space-y-4">
         {features.map((feature) => (
-          <li key={feature} className="flex items-start gap-3 text-sm leading-6">
-            <span className={isFeatured ? "text-emerald-300" : "text-emerald-600"}>
+          <li key={feature} className="flex items-center gap-3 text-sm font-semibold leading-6">
+            <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-full ${isFeatured ? "bg-emerald-400/15 text-emerald-300" : "bg-emerald-100 text-emerald-700"}`}>
               <CheckIcon />
             </span>
             <span>{feature}</span>
@@ -92,7 +103,7 @@ const PricingTier = ({
 
       <a
         href={buttonLink}
-        className={`${buttonClasses} mt-9 w-full rounded-full px-6 py-3.5 text-center text-sm font-bold transition-all duration-300 hover:scale-[1.02]`}
+        className={`${buttonClasses} relative mt-9 w-full rounded-full px-6 py-3.5 text-center text-sm font-black transition-all duration-300 hover:scale-[1.02]`}
       >
         {buttonText}
       </a>
@@ -100,32 +111,65 @@ const PricingTier = ({
   );
 };
 
-export const PricingSection = ({ data }: PricingSectionProps) => (
-  <section className="relative z-30 w-full overflow-hidden bg-emerald-50/60 px-5 py-20 sm:px-8 md:py-36">
-    <div className="mx-auto max-w-7xl">
-      <div className="mx-auto mb-14 max-w-3xl text-center md:mb-20">
-        <p className="mb-4 text-sm font-bold uppercase tracking-[0.3em] text-emerald-600">
-          Piani Statera
-        </p>
-        <h2 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl md:text-6xl">
-          {data.title}
-        </h2>
-        <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-600">
-          {data.subtitle}
+export const PricingSection = ({ data }: PricingSectionProps) => {
+  const [annual, setAnnual] = useState(false);
+
+  const toggleOption = (label: string, isAnnual: boolean, badge?: string) => (
+    <button
+      type="button"
+      onClick={() => setAnnual(isAnnual)}
+      aria-pressed={annual === isAnnual}
+      className={`flex cursor-pointer items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300 ${
+        annual === isAnnual ? "bg-slate-950 text-white shadow" : "text-slate-600 hover:text-emerald-700"
+      }`}
+    >
+      {label}
+      {badge && (
+        <span
+          className={`rounded-full px-2 py-0.5 text-[0.65rem] font-black uppercase tracking-wide transition-colors ${
+            annual === isAnnual ? "bg-emerald-400 text-slate-950" : "bg-emerald-100 text-emerald-700"
+          }`}
+        >
+          {badge}
+        </span>
+      )}
+    </button>
+  );
+
+  return (
+    <section className="relative z-30 w-full overflow-hidden bg-emerald-50/60 px-5 py-20 sm:px-8 md:py-36">
+      <div className="mx-auto max-w-7xl">
+        {/* L'ancora sta sul titolo con margine pari alla navbar fixed: cliccando
+            "Piani" si atterra col titolo in alto e le card subito visibili. */}
+        <div id="pricing" className="mx-auto mb-10 max-w-3xl scroll-mt-28 text-center sm:scroll-mt-36 md:mb-14">
+          <p className="mb-4 text-sm font-bold uppercase tracking-[0.3em] text-emerald-600">
+            Piani Statera
+          </p>
+          <h2 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl md:text-6xl">
+            {data.title}
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-600">
+            {data.subtitle}
+          </p>
+        </div>
+
+        <div className="mb-12 flex justify-center">
+          <div className="inline-flex items-center rounded-full border border-emerald-200 bg-white p-1.5 shadow-[0_10px_30px_rgba(5,150,105,0.1)]">
+            {toggleOption("Mensile", false)}
+            {toggleOption("Annuale", true, "fino a -38%")}
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:items-stretch">
+          {data.plans.map((plan) => (
+            <PricingTier key={plan.id} plan={plan} annual={annual} />
+          ))}
+        </div>
+
+        <p className="mt-12 text-center text-sm text-slate-500">
+          Prezzi IVA esclusa. Puoi cambiare piano in qualsiasi momento.
         </p>
       </div>
-
-      {/* L'ancora sta sulle card (non sulla sezione) così il link "Piani" atterra
-          con le card in vista invece che sul padding + titolo della sezione. */}
-      <div id="pricing" className="flex scroll-mt-24 flex-col items-center justify-center gap-6 md:flex-row md:items-stretch">
-        {data.plans.map((plan) => (
-          <PricingTier key={plan.id} {...plan} />
-        ))}
-      </div>
-
-      <p className="mt-12 text-center text-sm text-slate-500">
-        Prezzi IVA esclusa. Puoi cambiare piano in qualsiasi momento.
-      </p>
-    </div>
-  </section>
-);
+    </section>
+  );
+};

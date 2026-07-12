@@ -93,30 +93,20 @@ const pricingData = {
     {
       id: "starter",
       name: "Starter",
-      price: "€19",
-      frequency: "/ mese",
+      monthlyPrice: "€19",
+      annualPrice: "€14",
       description: "Per iniziare con ordine, senza complicazioni.",
-      features: [
-        "Gestione clienti e fascicoli",
-        "Schede alimentari e misurazioni",
-        "Report PDF di base",
-        "Fino a 30 clienti",
-      ],
+      features: ["Fino a 15 clienti"],
       buttonText: "Inizia ora",
       buttonLink: "/contatti",
     },
     {
       id: "pro",
       name: "Pro",
-      price: "€39",
-      frequency: "/ mese",
+      monthlyPrice: "€39",
+      annualPrice: "€29",
       description: "Per il professionista che vuole un flusso completo.",
-      features: [
-        "Tutto di Starter",
-        "Agenda, promemoria e strumenti clinici",
-        "Calcoli TDEE, macro e micronutrienti",
-        "Report multi-sessione illimitati",
-      ],
+      features: ["Fino a 50 clienti", "Supporto prioritario rispetto a Starter"],
       buttonText: "Partecipa alla beta",
       buttonLink: "/contatti",
       isFeatured: true,
@@ -124,15 +114,10 @@ const pricingData = {
     {
       id: "studio",
       name: "Studio",
-      price: "€79",
-      frequency: "/ mese",
+      monthlyPrice: "€79",
+      annualPrice: "€49",
       description: "Per studi e team che lavorano insieme.",
-      features: [
-        "Tutto di Pro",
-        "Multi-utente con ruoli e permessi",
-        "Branding avanzato",
-        "Supporto prioritario",
-      ],
+      features: ["Clienti illimitati", "Supporto prioritario rispetto a Pro"],
       buttonText: "Parla con noi",
       buttonLink: "/contatti",
     },
@@ -286,12 +271,23 @@ export default function Home() {
             </p>
           </div>
 
-          <ol className="mt-14 grid gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {workflow.map((item) => (
-              <li key={item.step} className="workflow-card">
-                <span className="font-mono text-xs font-bold tracking-[0.2em] text-emerald-300">{item.step}</span>
-                <h3 className="mt-12 text-2xl font-black">{item.title}</h3>
+              <li
+                key={item.step}
+                className="group relative min-h-56 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-transparent p-7 transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-400/40 hover:shadow-[0_20px_60px_rgba(16,185,129,0.15)]"
+              >
+                {/* Numero "fantasma" decorativo sullo sfondo */}
+                <span aria-hidden="true" className="pointer-events-none absolute -right-3 -top-7 font-mono text-[6.5rem] font-black leading-none text-white/[0.05] transition-colors duration-300 group-hover:text-emerald-400/10">
+                  {item.step}
+                </span>
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-400/10 font-mono text-xs font-black text-emerald-300">
+                  {item.step}
+                </span>
+                <h3 className="mt-9 text-2xl font-black tracking-tight">{item.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-slate-300">{item.text}</p>
+                {/* Riga emerald che si accende all'hover */}
+                <span aria-hidden="true" className="absolute inset-x-7 bottom-0 h-0.5 origin-left scale-x-0 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 transition-transform duration-300 group-hover:scale-x-100" />
               </li>
             ))}
           </ol>
@@ -299,28 +295,40 @@ export default function Home() {
       </section>
 
       <section className="relative z-30 px-5 py-20 sm:px-8 sm:py-28 lg:py-36">
-        <div className="mx-auto grid max-w-7xl gap-8 overflow-hidden rounded-[2rem] border border-emerald-100 bg-emerald-50/70 p-6 shadow-[0_30px_90px_rgba(5,150,105,0.1)] sm:p-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:p-14">
+        <div className="relative mx-auto grid max-w-7xl gap-8 overflow-hidden rounded-[2rem] border border-emerald-100 bg-emerald-50/70 p-6 shadow-[0_30px_90px_rgba(5,150,105,0.1)] sm:p-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:p-14">
+          {/* Alone decorativo nell'angolo del pannello */}
+          <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.14),transparent_65%)]" />
           <div>
             <p className="section-kicker">Pensato per la pratica</p>
             <h2 className="mt-4 text-3xl font-black tracking-[-0.035em] sm:text-5xl">La tecnologia resta sullo sfondo. Tu resti al centro.</h2>
             <p className="mt-6 text-lg leading-8 text-slate-600">
               Un’interfaccia chiara riduce i passaggi inutili e lascia più spazio alla relazione, al ragionamento e alla qualità del servizio.
             </p>
-            <Link href="/contatti" className="mt-8 inline-flex items-center gap-2 font-bold text-emerald-700 hover:text-emerald-800">
-              Scopri Statera in anteprima <ArrowIcon />
+            <Link href="/contatti" className="group mt-8 inline-flex items-center gap-2 font-bold text-emerald-700 hover:text-emerald-800">
+              Scopri Statera in anteprima
+              <span className="transition-transform duration-200 group-hover:translate-x-1"><ArrowIcon /></span>
             </Link>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             {[
               ["Più continuità", "Dati e attività seguono lo stesso percorso."],
               ["Meno ripetizioni", "Template e strumenti riutilizzabili accelerano il lavoro."],
               ["Più chiarezza", "Dashboard e storico rendono visibili le priorità."],
               ["Più identità", "Documenti e comunicazione valorizzano il tuo studio."],
             ].map(([title, text]) => (
-              <div key={title} className="rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm">
-                <span className="mb-5 grid h-9 w-9 place-items-center rounded-full bg-emerald-100 text-emerald-700"><CheckIcon /></span>
-                <h3 className="font-black text-slate-950">{title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{text}</p>
+              <div
+                key={title}
+                className="group relative overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-b from-white to-emerald-50/40 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-300 hover:shadow-[0_18px_45px_rgba(5,150,105,0.14)]"
+              >
+                {/* Bagliore d'angolo che si accende all'hover */}
+                <span aria-hidden="true" className="pointer-events-none absolute -right-8 -top-10 h-28 w-28 rounded-full bg-gradient-to-br from-emerald-100/0 to-teal-100/0 blur-2xl transition-colors duration-300 group-hover:from-emerald-100/80 group-hover:to-teal-100/60" />
+                <span className="relative mb-5 grid h-10 w-10 place-items-center rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-teal-50 text-emerald-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_6px_16px_rgba(5,150,105,0.08)] transition-colors duration-300 group-hover:border-emerald-300 group-hover:from-emerald-500 group-hover:to-teal-500 group-hover:text-white">
+                  <CheckIcon />
+                </span>
+                <h3 className="relative font-black text-slate-950">{title}</h3>
+                <p className="relative mt-2 text-sm leading-6 text-slate-600">{text}</p>
+                {/* Riga emerald sul fondo, coerente con le altre sezioni */}
+                <span aria-hidden="true" className="absolute inset-x-6 bottom-0 h-0.5 origin-left scale-x-0 rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-transform duration-300 group-hover:scale-x-100" />
               </div>
             ))}
           </div>

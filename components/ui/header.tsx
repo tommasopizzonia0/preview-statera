@@ -57,11 +57,12 @@ export const Header = () => {
   const pendingHashRef = useRef<string | null>(null);
 
   // Scroll manuale (niente scrollIntoView: su iOS subito dopo un reflow viene
-  // ignorato). 96px = scroll-mt-24 delle sezioni, per non finire sotto la barra.
+  // ignorato). L'offset è lo scroll-margin-top dichiarato dalla sezione stessa.
   const scrollToHash = (hash: string) => {
     const target = document.getElementById(hash);
     if (!target) return;
-    const top = target.getBoundingClientRect().top + window.scrollY - 96;
+    const margin = parseFloat(window.getComputedStyle(target).scrollMarginTop) || 96;
+    const top = target.getBoundingClientRect().top + window.scrollY - margin;
     window.scrollTo({ top: Math.max(top, 0), behavior: "smooth" });
     history.replaceState(null, "", `#${hash}`);
   };
@@ -144,7 +145,7 @@ export const Header = () => {
             aria-controls="mobile-navigation"
             aria-label={open ? "Chiudi menu" : "Apri menu"}
             onClick={() => setOpen((value) => !value)}
-            className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border transition-colors lg:hidden ${
+            className={`grid h-11 w-11 shrink-0 cursor-pointer place-items-center rounded-full border transition-colors lg:hidden ${
               open ? "border-emerald-300 bg-white text-emerald-700" : "border-slate-200 bg-white/70 text-slate-900"
             }`}
           >

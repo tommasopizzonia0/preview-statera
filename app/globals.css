@@ -97,7 +97,8 @@
     max-width: 100vw;
     overflow-x: hidden;
     scroll-behavior: smooth;
-    scroll-padding-top: 160px;
+    /* Niente scroll-padding globale: ogni sezione àncora definisce il suo
+       scroll-margin-top calibrato sull'altezza della navbar fixed. */
   }
 
   body {
@@ -316,12 +317,6 @@
   transform: scaleX(1);
 }
 
-.workflow-card {
-  min-height: 18rem;
-  background: #020617;
-  padding: 1.75rem;
-}
-
 .reveal-up {
   animation: reveal-up 650ms cubic-bezier(.2,.7,.2,1) both;
 }
@@ -338,10 +333,6 @@
 @media (max-width: 767px) {
   .feature-card {
     min-height: 18rem;
-  }
-
-  .workflow-card {
-    min-height: 15rem;
   }
 
   .cta-primary,

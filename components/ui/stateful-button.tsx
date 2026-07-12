@@ -34,7 +34,7 @@ export const Button = ({ onClick, children, className, ...props }: ButtonProps) 
       onClick={handleInternalClick}
       disabled={status === "loading" || status === "success"}
       className={cn(
-        "relative flex items-center justify-center transition-all duration-300 disabled:cursor-not-allowed",
+        "relative flex cursor-pointer items-center justify-center transition-all duration-300 disabled:cursor-not-allowed",
         status === "success" ? "bg-emerald-600" : "",
         className
       )}

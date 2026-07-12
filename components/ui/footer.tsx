@@ -25,7 +25,7 @@ export const Footer = () => {
           <div>
             <h3 className="text-sm font-black text-slate-950">Parliamone</h3>
             <ul className="mt-5 space-y-3 text-sm text-slate-500">
-              <li><Link href="/contatti" className="hover:text-emerald-700">Richiedi una demo</Link></li>
+              <li><Link href="/contatti" className="hover:text-emerald-700">Partecipa alla beta</Link></li>
               <li><a href="mailto:stateranutrition.info@gmail.com" className="break-all hover:text-emerald-700">stateranutrition.info@gmail.com</a></li>
             </ul>
           </div>

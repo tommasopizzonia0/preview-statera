@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Activity, Apple, Calculator, CalendarDays, FileText, UsersRound, type LucideIcon } from "lucide-react";
+import { CanvasText } from "@/components/ui/canvas-text";
 import { MacbookScroll } from "@/components/ui/macbook-scroll";
 import { PricingSection } from "@/components/ui/pricing-section";
 import { Footer } from "@/components/ui/footer";
@@ -116,7 +117,7 @@ const pricingData = {
         "Calcoli TDEE, macro e micronutrienti",
         "Report multi-sessione illimitati",
       ],
-      buttonText: "Richiedi una demo",
+      buttonText: "Partecipa alla beta",
       buttonLink: "/contatti",
       isFeatured: true,
     },
@@ -152,8 +153,9 @@ const CheckIcon = () => (
 
 export default function Home() {
   return (
+    // La navbar è fixed (non occupa spazio): il pt dell'hero compensa la sua altezza.
     <div className="statera-page-background min-h-screen overflow-clip text-slate-950">
-      <section className="relative isolate px-5 pb-20 pt-8 sm:px-8 sm:pb-28 sm:pt-12 lg:pt-14">
+      <section className="relative isolate px-5 pb-20 pt-32 sm:px-8 sm:pb-28 sm:pt-44 lg:pt-46">
         <div aria-hidden="true" className="hero-orb hero-orb-left" />
         <div aria-hidden="true" className="hero-orb hero-orb-right" />
 
@@ -161,8 +163,35 @@ export default function Home() {
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="reveal-up reveal-delay-1 text-balance text-4xl font-black leading-[0.98] tracking-[-0.045em] sm:text-6xl lg:text-[5.25rem]">
               Più tempo per le persone.
-              <span className="block bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600 bg-clip-text pb-2 text-transparent">
+              {/* Su mobile il gradiente statico: il canvas anima in continuo (costa batteria/fps)
+                  e il testo disegnato su canvas non va a capo. */}
+              <span className="block bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600 bg-clip-text pb-2 text-transparent md:hidden">
                 Più controllo sullo studio.
+              </span>
+              {/* Riga singola: il canvas non va a capo, quindi niente wrap, centrata anche
+                  se più larga del contenitore, e font che scala col viewport per non tagliarsi. */}
+              {/* tracking-normal: il canvas 2D ignora il letter-spacing CSS, quindi col
+                  tracking negativo del titolo la misura DOM risulta più stretta del testo
+                  disegnato e le ultime lettere vengono tagliate. */}
+              <span className="hidden whitespace-nowrap pb-2 text-[clamp(2.75rem,6vw,5.25rem)] tracking-normal md:flex md:justify-center">
+                <CanvasText
+                  text="Più controllo sullo studio."
+                  backgroundClassName="bg-emerald-600"
+                  colors={[
+                    "rgba(16, 185, 129, 1)",
+                    "rgba(16, 185, 129, 0.9)",
+                    "rgba(45, 212, 191, 0.8)",
+                    "rgba(16, 185, 129, 0.7)",
+                    "rgba(45, 212, 191, 0.6)",
+                    "rgba(16, 185, 129, 0.5)",
+                    "rgba(45, 212, 191, 0.4)",
+                    "rgba(16, 185, 129, 0.3)",
+                    "rgba(45, 212, 191, 0.2)",
+                    "rgba(16, 185, 129, 0.1)",
+                  ]}
+                  lineGap={4}
+                  animationDuration={20}
+                />
               </span>
             </h1>
 
@@ -172,7 +201,7 @@ export default function Home() {
 
             <div className="reveal-up reveal-delay-3 mt-9 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
               <Link href="/contatti" className="cta-primary group">
-                Richiedi una demo
+                Partecipa alla beta
                 <span className="transition-transform duration-200 group-hover:translate-x-1"><ArrowIcon /></span>
               </Link>
               <a href="#funzionalita" className="cta-secondary">
@@ -192,7 +221,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section aria-label="Anteprima del prodotto" className="relative z-30 border-y border-emerald-100/80 bg-white/80">
+      <section aria-label="Anteprima del prodotto" className="relative z-30">
+        {/* Aloni verdi soffusi dietro il MacBook (il clip del contenitore root
+            evita che gli offset negativi creino scroll orizzontale). */}
+        <div aria-hidden="true" className="pointer-events-none absolute -left-44 top-[22%] h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(circle,rgba(110,231,183,0.26),transparent_65%)]" />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-44 bottom-[8%] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(45,212,191,0.2),transparent_68%)]" />
+        <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-[55%] h-[22rem] w-[36rem] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse,rgba(16,185,129,0.12),transparent_70%)]" />
         <MacbookScroll
           src="/statera-dashboard.png"
           showGradient={false}
@@ -242,7 +276,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="come-funziona" className="relative z-40 bg-slate-950 px-5 py-20 text-white sm:px-8 sm:py-28 lg:py-36">
+      <section id="come-funziona" className="relative z-40 scroll-mt-24 bg-slate-950 px-5 py-20 text-white sm:px-8 sm:py-28 lg:py-36">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="section-kicker text-emerald-300">Un flusso naturale</p>
@@ -273,7 +307,7 @@ export default function Home() {
               Un’interfaccia chiara riduce i passaggi inutili e lascia più spazio alla relazione, al ragionamento e alla qualità del servizio.
             </p>
             <Link href="/contatti" className="mt-8 inline-flex items-center gap-2 font-bold text-emerald-700 hover:text-emerald-800">
-              Scopri Statera con una demo <ArrowIcon />
+              Scopri Statera in anteprima <ArrowIcon />
             </Link>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -305,7 +339,7 @@ export default function Home() {
               Raccontaci come lavori e scopri come Statera può accompagnare il tuo metodo ogni giorno.
             </p>
             <Link href="/contatti" className="cta-primary mt-9 bg-emerald-400 text-slate-950 hover:bg-emerald-300">
-              Richiedi una demo <ArrowIcon />
+              Partecipa alla beta <ArrowIcon />
             </Link>
           </div>
         </div>

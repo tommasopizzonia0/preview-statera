@@ -31,7 +31,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="it">
-      <body className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-white antialiased`}>
+      {/* suppressHydrationWarning: estensioni del browser (es. ColorZilla) iniettano
+          attributi nel body prima di React e causano falsi warning di hydration. */}
+      <body suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-white antialiased`}>
         <NutritionBackdrop />
         <Header />
         {children}

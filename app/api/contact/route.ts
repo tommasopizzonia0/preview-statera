@@ -5,7 +5,7 @@ const RECIPIENT = "stateranutrition.info@gmail.com";
 
 const topics: Record<string, string> = {
   info: "Richiesta informazioni",
-  demo: "Prenotazione demo",
+  demo: "Partecipazione alla beta",
   support: "Supporto tecnico",
   other: "Altra richiesta",
 };

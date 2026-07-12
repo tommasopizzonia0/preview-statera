@@ -101,7 +101,7 @@ const PricingTier = ({
 };
 
 export const PricingSection = ({ data }: PricingSectionProps) => (
-  <section id="pricing" className="relative z-30 w-full overflow-hidden bg-emerald-50/60 px-5 py-20 sm:px-8 md:py-36">
+  <section className="relative z-30 w-full overflow-hidden bg-emerald-50/60 px-5 py-20 sm:px-8 md:py-36">
     <div className="mx-auto max-w-7xl">
       <div className="mx-auto mb-14 max-w-3xl text-center md:mb-20">
         <p className="mb-4 text-sm font-bold uppercase tracking-[0.3em] text-emerald-600">
@@ -115,7 +115,9 @@ export const PricingSection = ({ data }: PricingSectionProps) => (
         </p>
       </div>
 
-      <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:items-stretch">
+      {/* L'ancora sta sulle card (non sulla sezione) così il link "Piani" atterra
+          con le card in vista invece che sul padding + titolo della sezione. */}
+      <div id="pricing" className="flex scroll-mt-24 flex-col items-center justify-center gap-6 md:flex-row md:items-stretch">
         {data.plans.map((plan) => (
           <PricingTier key={plan.id} {...plan} />
         ))}

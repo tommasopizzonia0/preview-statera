@@ -59,20 +59,23 @@ export const MacbookScroll = ({
         <div className="relative z-10 flex flex-col items-center">
           
           {/* ---> RIPRISTINATO IL PANNELLO SCRIVANIA NERO <--- */}
-          <div className="absolute top-[-9rem] w-[62rem] h-[34rem] bg-[#222222] rounded-t-[2rem] rounded-b-[1rem] -z-20 shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-[#333]">
+          <div className="absolute top-[-9rem] w-[62rem] h-[34rem] bg-[#222222] rounded-t-[2rem] rounded-b-[1rem] -z-20 md:shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-[#333]">
               <div className="absolute right-[2rem] top-[15rem] z-10">
                 <RulerLux />
               </div>
           </div>
 
           {/* Base area Mac (Silver/Gray) */}
-          <div className="relative z-10 h-[22rem] w-[32rem] overflow-hidden rounded-2xl bg-gray-200 shadow-2xl">
+          <div className="relative z-10 h-[22rem] w-[32rem] overflow-hidden rounded-2xl bg-gray-200 md:shadow-2xl">
             <div className="relative h-10 w-full">
               <div className="absolute inset-x-0 mx-auto h-4 w-[80%] bg-[#050505]" />
             </div>
             <div className="relative flex">
               <div className="mx-auto h-full w-[10%] overflow-hidden"><SpeakerGrid /></div>
-              <div className="mx-auto h-full w-[80%]"><Keypad /></div>
+              {/* La tastiera vera (~75 nodi con ombre) solo su desktop: su mobile la scena è
+                  scalata a 0.38 e il dettaglio non si vede, ma il costo di rendering resta pieno. */}
+              <div className="mx-auto hidden h-full w-[80%] md:block"><Keypad /></div>
+              <div className="mx-auto h-full w-[80%] md:hidden"><KeypadFlat /></div>
               <div className="mx-auto h-full w-[10%] overflow-hidden"><SpeakerGrid /></div>
             </div>
             <Trackpad />
@@ -123,12 +126,25 @@ export const Lid = ({ scaleX, scaleY, rotate, translate, src }: LidProps) => {
   );
 };
 
+// Versione "finta" della tastiera per mobile: un solo elemento con un pattern
+// a griglia in CSS, così il compositor disegna un layer invece di ~75.
+export const KeypadFlat = () => (
+  <div
+    className="mx-1 h-full rounded-md bg-[#050505] p-1"
+    style={{
+      backgroundImage:
+        "repeating-linear-gradient(0deg, #0A090D 0px, #0A090D 24px, #050505 24px, #050505 26px), repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 1px, transparent 1px, transparent 26px)",
+      backgroundBlendMode: "overlay",
+    }}
+  />
+);
+
 export const Trackpad = () => <div className="mx-auto my-1 h-32 w-[40%] rounded-xl" style={{ boxShadow: "0px 0px 1px 1px #00000020 inset" }}></div>;
 export const SpeakerGrid = () => <div className="mt-2 flex h-40 gap-[2px] px-[0.5px]" style={{ backgroundImage: "radial-gradient(circle, #08080A 0.5px, transparent 0.5px)", backgroundSize: "3px 3px" }}></div>;
 
 export const Keypad = () => {
   return (
-    <div className="mx-1 h-full [transform:translateZ(0)] rounded-md bg-[#050505] p-1 [will-change:transform]">
+    <div className="mx-1 h-full rounded-md bg-[#050505] p-1">
       <div className="mb-[2px] flex w-full shrink-0 gap-[2px]">
         <KBtn className="w-10 items-end justify-start pb-[2px] pl-[4px]" childrenClassName="items-start">esc</KBtn>
         <KBtn><IconBrightnessDown className="h-[6px] w-[6px]" /><span className="mt-1 inline-block">F1</span></KBtn>
@@ -206,7 +222,7 @@ type KBtnProps = {
 
 export const KBtn = ({ className, children, childrenClassName, backlit = true }: KBtnProps) => {
   return (
-    <div className={cn("[transform:translateZ(0)] rounded-[4px] p-[0.5px] [will-change:transform]", backlit && "bg-white/[0.2] shadow-xl shadow-white")}>
+    <div className={cn("rounded-[4px] p-[0.5px]", backlit && "bg-white/[0.2] md:shadow-xl md:shadow-white")}>
       <div className={cn("flex h-6 w-6 items-center justify-center rounded-[3.5px] bg-[#0A090D]", className)} style={{ boxShadow: "0px -0.5px 2px 0 #0D0D0F inset, -0.5px 0px 2px 0 #0D0D0F inset" }}>
         <div className={cn("flex w-full flex-col items-center justify-center text-[5px] text-neutral-200", childrenClassName, backlit && "text-white")}>{children}</div>
       </div>

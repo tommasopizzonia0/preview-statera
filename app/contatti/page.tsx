@@ -38,16 +38,16 @@ const ReasonIcon = ({ type }: { type: string }) => {
 };
 
 const reasons = [
-  { value: "demo", title: "Vedere una demo", text: "Scopri Statera sul tuo flusso di lavoro", badge: "Consigliato" },
+  { value: "demo", title: "Partecipare alla beta", text: "Prova Statera in anteprima sul tuo flusso di lavoro", badge: "Consigliato" },
   { value: "info", title: "Ricevere informazioni", text: "Piani, funzionalità e modalità di utilizzo" },
   { value: "support", title: "Richiedere supporto", text: "Ricevi assistenza dal nostro team" },
   { value: "other", title: "Parlare con noi", text: "Per partnership o qualsiasi altra richiesta" },
 ];
 
-const demoSteps = [
+const betaSteps = [
   ["01", "Il tuo metodo", "Partiamo da come lavori oggi."],
-  ["02", "Il flusso Statera", "Ti mostriamo ciò che può esserti utile."],
-  ["03", "La tua valutazione", "Decidi con calma e senza impegno."],
+  ["02", "Accesso in anteprima", "Ti attiviamo l’accesso alla beta di Statera."],
+  ["03", "Il tuo feedback", "Ci racconti cosa funziona e cosa migliorare."],
 ];
 
 const fieldClassName = "min-h-14 w-full rounded-2xl border-2 border-slate-300 bg-white px-4 text-base text-slate-950 shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition-[border-color,box-shadow,background-color] placeholder:text-slate-400 hover:border-slate-400 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10";
@@ -71,8 +71,9 @@ export default function ContattiPage() {
   };
 
   return (
+    // La navbar è fixed (non occupa spazio): il pt del main compensa la sua altezza.
     <div className="min-h-screen bg-white text-slate-950">
-      <main className="contact-page relative isolate overflow-hidden px-5 py-10 sm:px-8 sm:py-16 lg:py-20">
+      <main className="contact-page relative isolate overflow-hidden px-5 pb-10 pt-34 sm:px-8 sm:pb-16 sm:pt-48 lg:pb-20 lg:pt-52">
         <div aria-hidden="true" className="absolute -left-48 top-0 -z-10 h-[34rem] w-[34rem] rounded-full bg-emerald-200/40 blur-3xl" />
         <div aria-hidden="true" className="absolute -right-56 bottom-10 -z-10 h-[38rem] w-[38rem] rounded-full bg-teal-100/60 blur-3xl" />
 
@@ -97,11 +98,11 @@ export default function ContattiPage() {
 
               <div className="mt-9 overflow-hidden rounded-[1.75rem] bg-slate-950 p-6 text-white shadow-[0_24px_60px_rgba(2,6,23,0.18)] sm:p-8">
                 <div className="flex items-center justify-between gap-4">
-                  <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">Come funziona la demo</p>
+                  <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300">Come funziona la beta</p>
                   <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wider text-slate-300">Senza impegno</span>
                 </div>
                 <ol className="mt-7 space-y-5">
-                  {demoSteps.map(([number, title, text]) => (
+                  {betaSteps.map(([number, title, text]) => (
                     <li key={number} className="grid grid-cols-[2.25rem_1fr] gap-4">
                       <span className="grid h-9 w-9 place-items-center rounded-full bg-emerald-400/10 font-mono text-xs font-black text-emerald-300">{number}</span>
                       <div>

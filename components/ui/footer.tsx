@@ -32,7 +32,10 @@ export const Footer = () => {
         </div>
         <div className="mt-12 flex flex-col gap-4 border-t border-slate-100 pt-7 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
           <p>© {year} Statera. Tutti i diritti riservati.</p>
-          <p>Software per professionisti della nutrizione.</p>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <Link href="/privacy" className="hover:text-emerald-700">Privacy &amp; Cookie Policy</Link>
+            <p>Software per professionisti della nutrizione.</p>
+          </div>
         </div>
       </div>
     </footer>

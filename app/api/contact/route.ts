@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
@@ -83,6 +84,69 @@ function buildEmailHtml(name: string, email: string, topic: string, message: str
 </html>`;
 }
 
+// I dati personali inviati alla Conversions API vanno pseudonimizzati
+// con SHA-256, come richiesto da Meta per l'advanced matching.
+function sha256(value: string): string {
+  return createHash("sha256").update(value.trim().toLowerCase()).digest("hex");
+}
+
+function getCookieValue(cookieHeader: string | null, name: string): string | undefined {
+  const match = cookieHeader?.match(new RegExp(`(?:^|;\\s*)${name}=([^;]+)`));
+  return match?.[1];
+}
+
+// Evento "Lead" server-side (Conversions API): recupera i tracciamenti persi
+// da ad-blocker e restrizioni browser. L'eventId arriva dal client solo se
+// l'utente ha dato il consenso marketing, e coincide con quello dell'evento
+// browser così Meta li deduplica.
+async function sendMetaLeadEvent(request: Request, eventId: string, email: string, name: string) {
+  const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+  const accessToken = process.env.META_CAPI_ACCESS_TOKEN;
+  if (!pixelId || !accessToken) return;
+
+  const [firstName, ...otherNames] = name.split(/\s+/);
+  const lastName = otherNames.join(" ");
+  const cookieHeader = request.headers.get("cookie");
+  const fbp = getCookieValue(cookieHeader, "_fbp");
+  const fbc = getCookieValue(cookieHeader, "_fbc");
+  const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  const userAgent = request.headers.get("user-agent");
+
+  const payload = {
+    data: [
+      {
+        event_name: "Lead",
+        event_time: Math.floor(Date.now() / 1000),
+        event_id: eventId,
+        action_source: "website",
+        event_source_url: request.headers.get("referer") ?? undefined,
+        user_data: {
+          em: [sha256(email)],
+          fn: firstName ? [sha256(firstName)] : undefined,
+          ln: lastName ? [sha256(lastName)] : undefined,
+          client_ip_address: clientIp,
+          client_user_agent: userAgent ?? undefined,
+          fbp,
+          fbc,
+        },
+      },
+    ],
+  };
+
+  const response = await fetch(
+    `https://graph.facebook.com/v21.0/${pixelId}/events?access_token=${accessToken}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
+
+  if (!response.ok) {
+    console.error("Meta CAPI error:", response.status, await response.text());
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -90,6 +154,9 @@ export async function POST(request: Request) {
     const email = String(body.email ?? "").trim();
     const message = String(body.message ?? "").trim();
     const topic = topics[String(body.subject)] ?? topics.demo;
+    // Presente solo se l'utente ha acconsentito ai cookie di marketing.
+    const rawEventId = String(body.eventId ?? "");
+    const eventId = /^[0-9a-f-]{36}$/i.test(rawEventId) ? rawEventId : null;
 
     // Honeypot: i visitatori reali non compilano questo campo.
     if (body.website) {
@@ -141,6 +208,13 @@ export async function POST(request: Request) {
         { error: "Non è stato possibile inviare la richiesta." },
         { status: 502 }
       );
+    }
+
+    // Non bloccante: un errore verso Meta non deve far fallire l'invio della richiesta.
+    if (eventId) {
+      await sendMetaLeadEvent(request, eventId, email, name).catch((capiError) => {
+        console.error("Meta CAPI error:", capiError);
+      });
     }
 
     return NextResponse.json({ ok: true });

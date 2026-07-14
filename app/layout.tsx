@@ -5,6 +5,8 @@ import "./globals.css";
 import { Header } from "@/components/ui/header";
 import { BackToTop } from "@/components/ui/back-to-top";
 import { NutritionBackdrop } from "@/components/ui/nutrition-backdrop";
+import { CookieConsent } from "@/components/ui/cookie-consent";
+import { MetaPixel } from "@/components/ui/meta-pixel";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +40,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Header />
         {children}
         <BackToTop />
+        <CookieConsent />
+        <MetaPixel />
       </body>
     </html>
   );

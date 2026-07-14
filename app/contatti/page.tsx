@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Activity, Apple, Leaf, UtensilsCrossed, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/stateful-button";
 import { Footer } from "@/components/ui/footer";
+import { getConsent, trackLead } from "@/lib/meta-pixel";
 
 const ArrowIcon = () => (
   <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="h-5 w-5">
@@ -60,13 +61,18 @@ export default function ContattiPage() {
     const form = formRef.current;
     if (!form || !form.reportValidity()) throw new Error("Compila tutti i campi obbligatori.");
 
+    // Con il consenso marketing, lo stesso eventId viene inviato sia dal browser
+    // (fbq) sia dal server (Conversions API): Meta deduplica e conta un solo Lead.
+    const eventId = getConsent() === "granted" ? crypto.randomUUID() : undefined;
+
     const response = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(Object.fromEntries(new FormData(form).entries())),
+      body: JSON.stringify({ ...Object.fromEntries(new FormData(form).entries()), ...(eventId ? { eventId } : {}) }),
     });
     const result = await response.json();
     if (!response.ok) throw new Error(result.error ?? "Invio non riuscito.");
+    if (eventId) trackLead(eventId);
     form.reset();
   };
 
@@ -186,7 +192,10 @@ export default function ContattiPage() {
 
                 <div className="flex gap-3 rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4 text-sm leading-6 text-slate-600">
                   <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-700"><CheckIcon /></span>
-                  <p>I dati saranno utilizzati esclusivamente per rispondere alla tua richiesta.</p>
+                  <p>
+                    I dati saranno utilizzati per rispondere alla tua richiesta, come descritto nella{" "}
+                    <Link href="/privacy" className="font-semibold text-emerald-700 underline underline-offset-2 hover:text-emerald-800">Privacy Policy</Link>.
+                  </p>
                 </div>
 
                 <Button type="button" onClick={handleSendRequest} className="min-h-14 w-full rounded-full bg-slate-950 px-6 text-base font-black text-white shadow-[0_14px_32px_rgba(2,6,23,0.16)] transition-colors hover:bg-emerald-700 disabled:opacity-80">

@@ -3,5 +3,11 @@
   command = "npm run build"
   publish = ".next"
 
+# Il Pixel ID non è un segreto (è visibile nel sorgente della pagina) e qui
+# ha la precedenza sulla variabile in UI. Il token CAPI invece resta SOLO
+# nelle environment variables di Netlify.
+[build.environment]
+  NEXT_PUBLIC_META_PIXEL_ID = "1054741343894378"
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"

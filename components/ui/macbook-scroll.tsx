@@ -40,11 +40,19 @@ export const MacbookScroll = ({
   const rotate = useTransform(scrollYProgress, [0.1, 0.12, 0.3], [-28, -28, 0]);
   const textTransform = useTransform(scrollYProgress, [0, 0.3], [0, 100]);
   const textOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  // In uscita (quando lo sticky si sgancia e la scena risale verso la navbar)
+  // scrivania e corpo del Mac si dissolvono: sono loro a incrociare la barra.
+  // Lo schermo invece — che l'animazione spinge verso il basso — resta sempre
+  // visibile e si "parcheggia" sotto la navbar.
+  const deskOpacity = useTransform(scrollYProgress, [0.5, 0.7], [1, 0]);
 
   return (
     <div ref={ref} className="min-h-[64svh] w-full flex flex-col items-center md:min-h-[200vh]">
       
-      <div className="sticky top-0 flex h-[60svh] w-full -translate-y-8 scale-[0.38] transform flex-col items-center justify-center [perspective:800px] origin-center sm:scale-50 md:h-screen md:translate-y-0 md:scale-100">
+      {/* Su desktop la scena resta agganciata SOTTO la fascia della navbar fixed
+          (top-28 ≈ altezza pillola + margine) e l'altezza è ridotta di conseguenza,
+          così lo schermo del Mac ingrandito non finisce mai sotto la barra. */}
+      <div className="sticky top-0 flex h-[60svh] w-full -translate-y-8 scale-[0.38] transform flex-col items-center justify-center [perspective:800px] origin-center sm:scale-50 md:top-28 md:h-[calc(100svh-7rem)] md:translate-y-0 md:scale-100">
         
         {/* Titolo scuro per leggere bene sul bianco della pagina */}
         <motion.h2
@@ -54,9 +62,9 @@ export const MacbookScroll = ({
           {title}
         </motion.h2>
 
-        <Lid src={src} scaleX={scaleX} scaleY={scaleY} rotate={rotate} translate={translate} />
-        
-        <div className="relative z-10 flex flex-col items-center">
+        <Lid src={src} scaleX={scaleX} scaleY={scaleY} rotate={rotate} translate={translate} bodyOpacity={deskOpacity} />
+
+        <motion.div style={{ opacity: deskOpacity }} className="relative z-10 flex flex-col items-center">
           
           {/* ---> RIPRISTINATO IL PANNELLO SCRIVANIA NERO <--- */}
           <div className="absolute top-[-9rem] w-[62rem] h-[34rem] bg-[#222222] rounded-t-[2rem] rounded-b-[1rem] -z-20 md:shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-[#333]">
@@ -86,7 +94,7 @@ export const MacbookScroll = ({
             )}
             {badge && <div className="absolute bottom-4 left-4">{badge}</div>}
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
@@ -99,17 +107,20 @@ type LidProps = {
   scaleY: MotionValue<number>;
   rotate: MotionValue<number>;
   translate: MotionValue<number>;
+  bodyOpacity: MotionValue<number>;
   src?: string;
 };
 
-export const Lid = ({ scaleX, scaleY, rotate, translate, src }: LidProps) => {
+export const Lid = ({ scaleX, scaleY, rotate, translate, bodyOpacity, src }: LidProps) => {
   return (
     <div className="relative [perspective:800px] z-20">
-      <div style={{ transform: "perspective(800px) rotateX(-25deg) translateZ(0px)", transformOrigin: "bottom", transformStyle: "preserve-3d" }} className="relative h-[12rem] w-[32rem] rounded-2xl bg-[#010101] p-2">
+      {/* Il coperchio chiuso fa parte del "corpo" del Mac: in uscita sfuma
+          insieme alla scrivania, mentre lo schermo staccato resta visibile. */}
+      <motion.div style={{ transform: "perspective(800px) rotateX(-25deg) translateZ(0px)", transformOrigin: "bottom", transformStyle: "preserve-3d", opacity: bodyOpacity }} className="relative h-[12rem] w-[32rem] rounded-2xl bg-[#010101] p-2">
         <div style={{ boxShadow: "0px 2px 0px 2px #171717 inset" }} className="absolute inset-0 flex items-center justify-center rounded-lg bg-[#010101]">
           <span className="text-white"><AceternityLogo /></span>
         </div>
-      </div>
+      </motion.div>
       <motion.div style={{ scaleX, scaleY, rotateX: rotate, translateY: translate, transformStyle: "preserve-3d", transformOrigin: "top" }} className="absolute inset-0 h-96 w-[32rem] rounded-2xl bg-[#010101] p-2 z-30">
         <div className="absolute inset-0 rounded-lg bg-[#272729]" />
         {src && (

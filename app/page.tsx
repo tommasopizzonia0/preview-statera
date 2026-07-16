@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Activity, Apple, Calculator, CalendarDays, FileText, UsersRound, type LucideIcon } from "lucide-react";
 import { CanvasText } from "@/components/ui/canvas-text";
+import { DemoVideo } from "@/components/ui/demo-video";
 import { MacbookScroll } from "@/components/ui/macbook-scroll";
 import { PricingSection } from "@/components/ui/pricing-section";
 import { Footer } from "@/components/ui/footer";
@@ -59,6 +60,34 @@ const capabilities = [
     description:
       "Report e documenti personalizzati danno continuità all’esperienza e valorizzano l’identità del professionista.",
     accent: "from-rose-50 to-white",
+  },
+];
+
+const documentFlow = [
+  {
+    step: "01",
+    title: "Anteprima in tempo reale",
+    text: "Il PDF si apre all’istante in Statera, senza download né applicazioni esterne.",
+  },
+  {
+    step: "02",
+    title: "Nel fascicolo, con un click",
+    text: "Il documento si archivia nel fascicolo del cliente, pronto quando serve.",
+  },
+  {
+    step: "03",
+    title: "Un unico archivio, sempre ordinato",
+    text: "Referti, piani e report del cliente restano ordinati nello stesso posto.",
+  },
+  {
+    step: "04",
+    title: "Invio istantaneo",
+    text: "Un click e il documento arriva al cliente, senza passaggi intermedi.",
+  },
+  {
+    step: "05",
+    title: "Ritorni dove eri",
+    text: "Completato l’invio torni al profilo del cliente e riprendi da dove eri.",
   },
 ];
 
@@ -257,6 +286,89 @@ export default function Home() {
                 </article>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      <section id="documenti" aria-labelledby="documenti-title" className="relative z-40 scroll-mt-24 px-5 py-20 sm:px-8 sm:py-28 lg:py-36">
+        {/* Aloni soffusi coerenti con la sezione anteprima prodotto */}
+        <div aria-hidden="true" className="pointer-events-none absolute -right-40 top-[12%] h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(circle,rgba(110,231,183,0.22),transparent_65%)]" />
+        <div aria-hidden="true" className="pointer-events-none absolute -left-44 bottom-[10%] h-[24rem] w-[24rem] rounded-full bg-[radial-gradient(circle,rgba(45,212,191,0.16),transparent_68%)]" />
+
+        <div className="relative mx-auto max-w-7xl">
+          <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+            <div>
+              <p className="section-kicker">Documenti senza attrito</p>
+              <h2 id="documenti-title" className="section-title mt-4">Dal PDF al cliente, in un unico gesto.</h2>
+            </div>
+            <p className="max-w-2xl text-lg leading-8 text-slate-600 lg:justify-self-end">
+              Guarda Statera all’opera: anteprima immediata del documento, archiviazione nel fascicolo e invio al cliente, senza mai uscire dal suo percorso.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-8 xl:grid-cols-[0.8fr_1.2fr] xl:gap-12">
+            {/* Su mobile/tablet prima il video (aggancia subito), poi i passaggi.
+                Da xl in su: passaggi a sinistra in colonna alta ESATTAMENTE quanto
+                il video (lista assoluta dentro un wrapper che eredita l'altezza
+                della riga, definita dal video) e card che si ripartiscono lo spazio. */}
+            <div className="order-2 min-w-0 xl:order-1 xl:relative">
+              <ol className="space-y-3 xl:absolute xl:inset-0 xl:flex xl:flex-col xl:gap-2.5 xl:space-y-0">
+                {documentFlow.map((item) => (
+                  <li
+                    key={item.step}
+                    className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors duration-300 hover:border-emerald-300 sm:p-6 xl:flex xl:min-h-0 xl:flex-1 xl:flex-col xl:justify-center xl:px-5 xl:py-2.5"
+                  >
+                    {/* items-baseline: il numero è agganciato alla baseline tipografica
+                        del titolo, non a un offset fisso — resta allineato a qualsiasi
+                        dimensione di font. */}
+                    <div className="flex items-baseline gap-4">
+                      <span className="w-7 shrink-0 font-mono text-xs font-black tracking-widest text-emerald-600">
+                        {item.step}
+                      </span>
+                      <div className="min-w-0 border-l border-slate-100 pl-4 transition-colors duration-300 group-hover:border-emerald-200">
+                        <h3 className="font-black tracking-[-0.01em] text-slate-950 xl:text-sm">{item.title}</h3>
+                        <p className="mt-1.5 text-sm leading-6 text-slate-600 xl:mt-1 xl:line-clamp-2 xl:text-xs xl:leading-[1.15rem]">{item.text}</p>
+                      </div>
+                    </div>
+                    {/* Riga emerald sul fondo, coerente con le altre sezioni */}
+                    <span aria-hidden="true" className="absolute inset-x-6 bottom-0 h-0.5 origin-left scale-x-0 rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-transform duration-300 group-hover:scale-x-100" />
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            <div className="relative order-1 min-w-0 xl:order-2">
+              {/* Bagliore dietro la finestra video */}
+              <div aria-hidden="true" className="pointer-events-none absolute -inset-8 rounded-full bg-[radial-gradient(ellipse,rgba(16,185,129,0.14),transparent_70%)]" />
+              <figure className="relative overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-[0_30px_90px_rgba(5,150,105,0.18)] sm:rounded-[2rem]">
+                {/* Barra stile finestra applicazione */}
+                <div className="flex items-center gap-2 border-b border-slate-100 bg-slate-50/90 px-4 py-3 sm:px-5">
+                  <span aria-hidden="true" className="flex gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-slate-200" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-slate-200" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
+                  </span>
+                  <span className="ml-2 min-w-0 truncate font-mono text-[0.65rem] font-bold uppercase tracking-[0.14em] text-slate-400 sm:text-xs">
+                    Statera — Fascicolo cliente
+                  </span>
+                  <span className="ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[0.6rem] font-black uppercase tracking-wider text-emerald-700">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    </span>
+                    Dal vivo
+                  </span>
+                </div>
+                <DemoVideo
+                  src="/statera-gestione-documenti.mp4"
+                  label="Dimostrazione della gestione documenti in Statera: anteprima del PDF, aggiunta al fascicolo del cliente e invio con un click"
+                  className="block h-auto w-full bg-slate-50"
+                />
+                <figcaption className="sr-only">
+                  Flusso documenti in Statera: anteprima PDF in tempo reale, archiviazione nel fascicolo e invio istantaneo al cliente.
+                </figcaption>
+              </figure>
+            </div>
           </div>
         </div>
       </section>
